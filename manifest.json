@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Outreach Drafter",
+  "version": "0.1.0",
+  "description": "Reads the LinkedIn Recruiter profile you're viewing, pairs it with a Notion hiring playbook, and drafts tailored outreach.",
+  "permissions": ["sidePanel", "storage", "scripting", "activeTab", "tabs", "identity"],
+  "host_permissions": [
+    "https://www.linkedin.com/*",
+    "https://api.notion.com/*",
+    "http://127.0.0.1:8787/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "options_page": "options.html",
+  "action": {
+    "default_title": "Draft outreach"
+  }
+}

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outreach Settings</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    main { max-width: 600px; margin: 0 auto; padding-top: 40px; }
+    .row input, .row .select-wrap { text-align: right; color: var(--label-2); }
+    .row input:focus { color: var(--label); }
+    .row-label { min-width: 120px; }
+    .saved { text-align: center; color: var(--green); font-size: 13px; margin-top: 10px; min-height: 18px; transition: opacity 0.3s; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 class="large-title" style="margin: 0 16px">Settings</h1>
+    <form id="form">
+      <div class="section-header">You</div>
+      <div class="group">
+        <label class="row">
+          <div class="symbol indigo"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg></div>
+          <span class="row-label">Sign-off name</span>
+          <input id="senderName" placeholder="Your first name" />
+        </label>
+      </div>
+
+      <div class="section-header">Notion</div>
+      <div class="group">
+        <div class="row">
+          <div class="symbol" id="notion-status-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div>
+          <span class="row-label">Status</span>
+          <span id="notion-status" style="flex:1; text-align:right; color: var(--label-2)">Not connected</span>
+        </div>
+        <div class="row">
+          <div class="symbol gray"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/><path d="M4 12h11"/></svg></div>
+          <span class="row-label">Redirect URI</span>
+          <code id="redirect-uri" style="flex:1; min-width:0; text-align:right; font-size:12px; color: var(--label-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap"></code>
+          <button type="button" class="link-button" id="copy-redirect">Copy</button>
+        </div>
+        <label class="row">
+          <div class="symbol gray"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div>
+          <span class="row-label">OAuth client ID</span>
+          <input id="notionClientId" placeholder="Paste from Notion" autocomplete="off" />
+        </label>
+        <label class="row">
+          <div class="symbol gray"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <span class="row-label">OAuth client secret</span>
+          <input id="notionClientSecret" type="password" placeholder="Paste from Notion" autocomplete="off" />
+        </label>
+        <label class="row">
+          <div class="symbol blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></div>
+          <span class="row-label">Title contains</span>
+          <input id="titleFilter" placeholder="playbook" />
+        </label>
+      </div>
+      <div class="section-footer">In Notion’s Developer tools, create an OAuth connection and paste the Redirect URI above into it. Copy its client ID and secret here, then connect. When Notion asks which pages to share, pick the page that holds your hiring playbooks.</div>
+      <button type="button" class="button tinted" id="connect-notion" style="width:100%; height:44px; margin-top:12px">Connect Notion</button>
+      <div class="status" id="connect-status"></div>
+
+      <div class="section-header">Advanced</div>
+      <div class="group">
+        <label class="row">
+          <div class="symbol gray"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3"/></svg></div>
+          <span class="row-label">Notion API token</span>
+          <input id="notionToken" type="password" placeholder="Set by Connect" autocomplete="off" />
+        </label>
+      </div>
+      <div class="section-footer">Only needed if a Notion admin gives you an internal API token instead.</div>
+
+      <div class="section-header">Claude</div>
+      <div class="group">
+        <label class="row">
+          <div class="symbol orange"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3"/></svg></div>
+          <span class="row-label">API key</span>
+          <input id="anthropicKey" type="password" placeholder="sk-ant-…" autocomplete="off" />
+        </label>
+        <label class="row">
+          <div class="symbol green"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/></svg></div>
+          <span class="row-label">Model</span>
+          <div class="select-wrap">
+            <select id="model">
+              <option value="claude-opus-5-5">Opus 5.5</option>
+              <option value="claude-sonnet-5-5">Sonnet 5.5</option>
+            </select>
+          </div>
+        </label>
+      </div>
+      <div class="section-footer">Opus writes the best drafts. Sonnet is faster and cheaper. Keys stay in your Chrome profile.</div>
+
+      <button type="submit" class="button filled" style="margin-top: 28px">Save</button>
+      <div class="saved" id="saved"></div>
+    </form>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
