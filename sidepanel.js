@@ -1,14 +1,24 @@
 import { listPlaybooks, fetchPlaybookText } from './lib/notion.js';
 import { draftOutreach } from './lib/claude.js';
 import { scrapeProfile } from './lib/scrape.js';
+import { listJobs, matchJob } from './lib/ashby.js';
+import { LENGTHS } from './lib/style.js';
 
 const $ = (id) => document.getElementById(id);
-const DEFAULTS = { model: 'claude-opus-5-5', titleFilter: 'playbook' };
-const WORD_LIMIT = 100;
+const DEFAULTS = { model: 'claude-opus-5-5', titleFilter: 'playbook', ashbyBoard: 'v7labs.com' };
+const INMAIL_CHAR_LIMIT = 1900;
+const LENGTH_HINTS = {
+  short: 'Up to about 100 words. Best for a first InMail.',
+  medium: 'Up to 750 characters, with a link to the job advert.',
+  long: 'Up to 1,100 characters, with a link to the job advert.',
+};
 
 let settings = {};
 let variants = [];
 let active = 0;
+let limit = LENGTHS.short;
+let length = 'short';
+let jobs = [];
 
 async function loadSettings() {
   settings = { ...DEFAULTS, ...(await chrome.storage.sync.get(null)) };
@@ -45,6 +55,38 @@ async function loadPlaybooks(force = false) {
       playbooks.map((p) => `<option value="${p.id}">${escapeHtml(shortTitle(p.title))}</option>`).join('')
     : '<option value="">None shared</option>';
   select.value = lastPlaybook && playbooks.some((p) => p.id === lastPlaybook) ? lastPlaybook : '';
+  pickJobForPlaybook();
+}
+
+function setLength(next, save = true) {
+  length = LENGTHS[next] ? next : 'short';
+  const keys = Object.keys(LENGTHS);
+  const seg = $('length');
+  seg.querySelector('.thumb').style.transform = `translateX(${keys.indexOf(length) * 100}%)`;
+  seg.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.length === length)));
+  $('length-hint').textContent = LENGTH_HINTS[length];
+  $('job-section').hidden = length === 'short';
+  if (length !== 'short' && !jobs.length) loadJobs();
+  if (save) chrome.storage.local.set({ lastLength: length });
+}
+
+async function loadJobs(force = false) {
+  const select = $('job');
+  try {
+    jobs = await listJobs(settings.ashbyBoard, { force });
+  } catch (e) {
+    jobs = [];
+    setStatus(e.message, { error: true });
+  }
+  select.innerHTML = '<option value="">No link</option>' +
+    jobs.map((j) => `<option value="${j.id}">${escapeHtml(j.title)}${j.location ? ` · ${escapeHtml(j.location)}` : ''}</option>`).join('');
+  pickJobForPlaybook();
+}
+
+function pickJobForPlaybook() {
+  const option = $('playbook').selectedOptions[0];
+  if (!option?.value || !jobs.length) return;
+  $('job').value = matchJob(option.textContent, jobs)?.id || '';
 }
 
 // "Account Executive - Hiring Playbook 2026" -> "Account Executive"
@@ -92,6 +134,9 @@ async function draft() {
       notes: $('notes').value.trim(),
       profile,
       playbook: { title, text },
+      length,
+      job: jobs.find((j) => j.id === $('job').value),
+      onStatus: (msg) => setStatus(msg, { busy: true }),
     });
 
     render(result);
@@ -121,6 +166,7 @@ function render(r) {
     ${hooks ? `<div class="row stack" style="padding-bottom:0"><span class="row-caption">Why them</span></div>${hooks}` : ''}`;
 
   variants = (r.variants || []).map((v) => ({ ...v }));
+  limit = r.limit || LENGTHS.short;
   const recommended = (r.recommended || '').trim().charAt(0).toUpperCase();
   const seg = $('segmented');
   seg.innerHTML = '<div class="thumb"></div>' + variants.map((v, i) => {
@@ -176,7 +222,7 @@ function selectVariant(i) {
     <div class="row stack">
       <span class="row-caption">Message</span>
       <textarea class="draft-body" id="body-input"></textarea>
-      <div class="draft-footer" style="padding:6px 0 2px"><span></span><span class="pill" id="word-count"></span></div>
+      <div class="draft-footer" style="padding:6px 0 2px"><span></span><span style="display:flex;gap:6px"><span class="pill" id="char-count"></span><span class="pill" id="word-count"></span></span></div>
     </div>`;
   const subject = $('subject-input');
   const body = $('body-input');
@@ -189,10 +235,17 @@ function selectVariant(i) {
 }
 
 function updateCount() {
-  const words = (variants[active]?.body || '').trim().split(/\s+/).filter(Boolean).length;
-  const pill = $('word-count');
-  pill.textContent = `${words} / ${WORD_LIMIT} words`;
-  pill.classList.toggle('over', words > WORD_LIMIT);
+  const body = variants[active]?.body || '';
+  const words = body.trim().split(/\s+/).filter(Boolean).length;
+  const chars = body.length;
+  const byWords = limit.unit === 'words';
+  const wordPill = $('word-count');
+  const charPill = $('char-count');
+  wordPill.textContent = byWords ? `${words} / ${limit.limit} words` : `${words} words`;
+  charPill.textContent = byWords ? `${chars.toLocaleString()} chars` : `${chars.toLocaleString()} / ${limit.limit.toLocaleString()} chars`;
+  wordPill.classList.toggle('over', byWords && words > limit.limit * 1.1);
+  charPill.classList.toggle('over', chars > (byWords ? INMAIL_CHAR_LIMIT : limit.limit * 1.1));
+  charPill.title = chars > INMAIL_CHAR_LIMIT ? `Longer than LinkedIn's InMail limit of about ${INMAIL_CHAR_LIMIT.toLocaleString()} characters` : '';
 }
 
 function autosize(el) {
@@ -215,8 +268,10 @@ function escapeHtml(s) {
 const openSettings = (e) => { e.preventDefault(); chrome.runtime.openOptionsPage(); };
 $('open-settings').addEventListener('click', openSettings);
 $('open-settings-2').addEventListener('click', openSettings);
-$('refresh-playbooks').addEventListener('click', () => loadPlaybooks(true));
+$('refresh-playbooks').addEventListener('click', () => { loadPlaybooks(true); if (length !== 'short') loadJobs(true); });
 $('draft').addEventListener('click', draft);
+$('playbook').addEventListener('change', pickJobForPlaybook);
+$('length').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setLength(b.dataset.length)));
 $('copy-body').addEventListener('click', (e) => copy(variants[active]?.body || '', e.currentTarget));
 $('copy-subject').addEventListener('click', (e) => copy(variants[active]?.subject || '', e.currentTarget));
 window.addEventListener('scroll', () => $('navbar').classList.toggle('scrolled', window.scrollY > 4), { passive: true });
@@ -224,9 +279,13 @@ window.addEventListener('scroll', () => $('navbar').classList.toggle('scrolled',
 chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area !== 'sync') return;
   if (await loadSettings()) loadPlaybooks(!!(changes.notionToken || changes.titleFilter));
+  if (changes.ashbyBoard) { jobs = []; if (length !== 'short') loadJobs(true); }
 });
 
 (async () => {
-  if (await loadSettings()) loadPlaybooks();
+  const ready = await loadSettings();
+  const { lastLength } = await chrome.storage.local.get('lastLength');
+  setLength(lastLength || 'short', false);
+  if (ready) loadPlaybooks();
   else $('playbook').innerHTML = '<option value="">Not set up</option>';
 })();

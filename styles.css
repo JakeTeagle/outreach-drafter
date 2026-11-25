@@ -1,45 +1,56 @@
-/* Apple Human Interface Guidelines: system colours, grouped inset lists, SF type scale. */
+/* Apple HIG layout (grouped inset lists, SF type scale) in V7's palette:
+   Mine Shaft #292929, White #ffffff, Blaze Orange #FF6300. */
 :root {
-  --bg: #f2f2f7;
+  --bg: #f4f4f4;
   --surface: #ffffff;
-  --surface-2: #f2f2f7;
-  --label: #000000;
-  --label-2: rgba(60, 60, 67, 0.6);
-  --label-3: rgba(60, 60, 67, 0.3);
-  --separator: rgba(60, 60, 67, 0.18);
-  --fill: rgba(120, 120, 128, 0.12);
-  --fill-2: rgba(120, 120, 128, 0.2);
-  --blue: #007aff;
-  --blue-tint: rgba(0, 122, 255, 0.1);
-  --green: #34c759;
-  --green-tint: rgba(52, 199, 89, 0.12);
-  --orange: #ff9500;
-  --orange-tint: rgba(255, 149, 0, 0.1);
-  --red: #ff3b30;
-  --bar: rgba(242, 242, 247, 0.78);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --surface-2: #f4f4f4;
+  --label: #292929;
+  --label-2: rgba(41, 41, 41, 0.62);
+  --label-3: rgba(41, 41, 41, 0.32);
+  --separator: rgba(41, 41, 41, 0.12);
+  --fill: rgba(41, 41, 41, 0.06);
+  --fill-2: rgba(41, 41, 41, 0.11);
+  --accent: #ff6300;
+  --accent-text: #c44d00; /* Blaze Orange darkened so small text stays readable on white */
+  --accent-tint: rgba(255, 99, 0, 0.1);
+  --primary: #292929;     /* main button: Mine Shaft with white text */
+  --on-primary: #ffffff;
+  --ink: #292929;         /* neutral icon tiles */
+  --thumb: #ffffff;
+  --green: #1f9d55;
+  --green-tint: rgba(31, 157, 85, 0.12);
+  --orange: #ff6300;
+  --orange-tint: rgba(255, 99, 0, 0.1);
+  --red: #d93025;
+  --bar: rgba(244, 244, 244, 0.8);
+  --shadow: 0 1px 2px rgba(41, 41, 41, 0.05), 0 4px 16px rgba(41, 41, 41, 0.05);
   --radius: 12px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #000000;
-    --surface: #1c1c1e;
-    --surface-2: #2c2c2e;
+    --bg: #1e1e1e;
+    --surface: #292929;
+    --surface-2: #333333;
     --label: #ffffff;
-    --label-2: rgba(235, 235, 245, 0.6);
-    --label-3: rgba(235, 235, 245, 0.3);
-    --separator: rgba(84, 84, 88, 0.6);
-    --fill: rgba(120, 120, 128, 0.24);
-    --fill-2: rgba(120, 120, 128, 0.36);
-    --blue: #0a84ff;
-    --blue-tint: rgba(10, 132, 255, 0.18);
+    --label-2: rgba(255, 255, 255, 0.62);
+    --label-3: rgba(255, 255, 255, 0.3);
+    --separator: rgba(255, 255, 255, 0.1);
+    --fill: rgba(255, 255, 255, 0.08);
+    --fill-2: rgba(255, 255, 255, 0.14);
+    --accent: #ff6300;
+    --accent-text: #ff6300;
+    --accent-tint: rgba(255, 99, 0, 0.18);
+    --primary: #ff6300;   /* main button: Blaze Orange with Mine Shaft text */
+    --on-primary: #292929;
+    --ink: #4a4a4a;
+    --thumb: #4a4a4a;
     --green: #30d158;
     --green-tint: rgba(48, 209, 88, 0.16);
-    --orange: #ff9f0a;
-    --orange-tint: rgba(255, 159, 10, 0.16);
+    --orange: #ff6300;
+    --orange-tint: rgba(255, 99, 0, 0.18);
     --red: #ff453a;
-    --bar: rgba(0, 0, 0, 0.72);
+    --bar: rgba(30, 30, 30, 0.75);
     --shadow: none;
     color-scheme: dark;
   }
@@ -55,7 +66,7 @@ body {
   background: var(--bg);
   color: var(--label);
 }
-a { color: var(--blue); text-decoration: none; }
+a { color: var(--accent-text); text-decoration: none; }
 svg { display: block; }
 [hidden] { display: none !important; }
 
@@ -85,7 +96,7 @@ svg { display: block; }
   border-radius: 50%;
   border: 0;
   background: var(--fill);
-  color: var(--blue);
+  color: var(--accent-text);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -140,11 +151,11 @@ main { padding: 8px 16px 32px; }
   place-items: center;
   color: #fff;
 }
-.symbol.blue { background: var(--blue); }
+.symbol.blue { background: var(--accent); }
 .symbol.orange { background: var(--orange); }
-.symbol.green { background: var(--green); }
-.symbol.indigo { background: #5856d6; }
-.symbol.gray { background: #8e8e93; }
+.symbol.green { background: var(--accent); }
+.symbol.indigo { background: var(--ink); }
+.symbol.gray { background: var(--ink); }
 
 /* Controls */
 input, textarea, select {
@@ -198,11 +209,11 @@ textarea { resize: none; line-height: 1.45; }
 }
 .button:active { transform: scale(0.98); }
 .button:disabled { opacity: 0.45; cursor: default; transform: none; }
-.button.filled { background: var(--blue); color: #fff; margin-top: 16px; }
+.button.filled { background: var(--primary); color: var(--on-primary); margin-top: 16px; }
 .button.filled:hover:not(:disabled) { opacity: 0.9; }
 .button.tinted {
-  background: var(--blue-tint);
-  color: var(--blue);
+  background: var(--accent-tint);
+  color: var(--accent-text);
   height: 36px;
   border-radius: 9px;
   font-size: 14px;
@@ -210,12 +221,12 @@ textarea { resize: none; line-height: 1.45; }
   flex: 1;
 }
 .button.tinted.done { background: var(--green-tint); color: var(--green); }
-.button.plain { background: none; color: var(--blue); height: 36px; width: auto; font-weight: 400; }
+.button.plain { background: none; color: var(--accent-text); height: 36px; width: auto; font-weight: 400; }
 
 .link-button {
   border: 0;
   background: none;
-  color: var(--blue);
+  color: var(--accent-text);
   font: inherit;
   padding: 0;
   cursor: pointer;
@@ -271,14 +282,14 @@ textarea { resize: none; line-height: 1.45; }
   border-radius: 50%;
   display: grid;
   place-items: center;
-  color: #fff;
+  color: #292929;
   font: 600 19px/1 -apple-system, BlinkMacSystemFont, "SF Pro Rounded", sans-serif;
-  background: linear-gradient(180deg, #a5abb8, #858994);
+  background: var(--accent);
 }
 .candidate-name { font: 600 19px/1.2 -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
 .candidate-role { color: var(--label-2); font-size: 14px; margin-top: 2px; }
 .hook { font-size: 14px; align-items: flex-start; }
-.hook .dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-top: 7px; }
+.hook .dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 7px; }
 
 /* Segmented control */
 .segmented {
@@ -297,11 +308,11 @@ textarea { resize: none; line-height: 1.45; }
   bottom: 2px;
   left: 2px;
   border-radius: 7px;
-  background: var(--surface);
+  background: var(--thumb);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
   transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.4, 1);
 }
-@media (prefers-color-scheme: dark) { .segmented .thumb { background: #636366; } }
+
 .segmented button {
   position: relative;
   z-index: 1;

@@ -99,10 +99,17 @@ That's it. The helper now starts by itself every time you turn on your Mac.
 1. Open someone's profile in **LinkedIn Recruiter**.
 2. Click the **Outreach Drafter** icon.
 3. Choose the role from **Playbook**.
-4. *(Optional)* Add a note, e.g. *"referred by a colleague"* or *"mention we're hybrid in London"*.
-5. Click **Scan Profile & Draft**. It takes about 20 to 40 seconds.
-6. Switch between **Their Work** and **The Role**. The ★ shows the one it recommends.
-7. Edit if you like, then click **Copy Message** and **Copy Subject**, and paste them into LinkedIn.
+4. Choose a **Length**:
+   - **Short:** up to about 100 words. Best for a first InMail.
+   - **Medium:** up to 750 characters, including a link to the job advert.
+   - **Long:** up to 1,100 characters, including a link to the job advert.
+5. For Medium and Long, check the **Job Advert** it picked. It chooses the advert from your Ashby careers page that best matches the playbook. Change it if it's wrong, or choose **No link**.
+6. *(Optional)* Add a note, e.g. *"referred by a colleague"* or *"mention we're hybrid in London"*.
+7. Click **Scan Profile & Draft**. It takes about 20 to 40 seconds, a little longer if it needs to tidy up the wording.
+8. Switch between **Their Work** and **The Role**. The ★ shows the one it recommends.
+9. Edit if you like, then click **Copy Message** and **Copy Subject**, and paste them into LinkedIn. The counters under the message show words and characters, and turn orange if a draft runs over its length.
+
+**How it keeps the writing human:** every draft is checked before you see it. Dashes are swapped for commas, paragraphs are spaced properly, and Claude rewrites anything that sounds machine-written. That covers "it's not X, it's Y" lines, stock phrases like "I hope this finds you well", and exclamation marks. Anything it can't fix shows up under **Check Before Sending**.
 
 **Tip:** Did you add a new playbook in Notion? Click **Refresh from Notion** to see it.
 
@@ -146,6 +153,8 @@ Everything is written in plain English, so you can change it:
 
 - **Tone, length and rules for the messages:** open `lib/claude.js` in any text editor. Edit the long block of instructions near the top, then save.
 - **Which Notion pages count as playbooks:** change **Title contains** in Settings.
+- **Which careers page the job links come from:** change **Job board** in Settings to the last part of your Ashby careers page address (for jobs.ashbyhq.com/**yourcompany.com**, type *yourcompany.com*).
+- **Phrases to avoid:** add to the list near the top of `lib/style.js`.
 - **Faster and cheaper drafts:** switch **Model** to *Sonnet 5.5* in Settings.
 
 After changing a file, go to `chrome://extensions` and click the ↻ reload arrow on Outreach Drafter.

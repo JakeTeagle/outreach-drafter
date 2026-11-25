@@ -49,6 +49,31 @@
       </div>
     </div>
 
+    <div class="section-header">Length</div>
+    <div class="segmented" id="length" role="tablist" aria-label="Message length">
+      <div class="thumb" style="width: calc((100% - 4px) / 3)"></div>
+      <button role="tab" data-length="short">Short</button>
+      <button role="tab" data-length="medium">Medium</button>
+      <button role="tab" data-length="long">Long</button>
+    </div>
+    <div class="section-footer" id="length-hint" style="margin-top:-4px"></div>
+
+    <div id="job-section" hidden>
+      <div class="section-header">Job Advert</div>
+      <div class="group">
+        <div class="row">
+          <div class="symbol gray">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+          </div>
+          <span class="row-label">Link</span>
+          <div class="select-wrap">
+            <select id="job" aria-label="Job advert to link"><option value="">Loading…</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="section-footer">From your Ashby job board. Picked to match the playbook; change it if needed.</div>
+    </div>
+
     <div class="section-header">Notes</div>
     <div class="group">
       <div class="row">

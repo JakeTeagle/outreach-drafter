@@ -1,7 +1,7 @@
 import { connectNotion } from './lib/notion.js';
 
-const FIELDS = ['senderName', 'notionClientId', 'notionClientSecret', 'notionToken', 'titleFilter', 'anthropicKey', 'model'];
-const DEFAULTS = { model: 'claude-opus-5-5', titleFilter: 'playbook' };
+const FIELDS = ['senderName', 'notionClientId', 'notionClientSecret', 'notionToken', 'titleFilter', 'ashbyBoard', 'anthropicKey', 'model'];
+const DEFAULTS = { model: 'claude-opus-5-5', titleFilter: 'playbook', ashbyBoard: 'v7labs.com' };
 const $ = (id) => document.getElementById(id);
 
 function readForm() {
